@@ -7,7 +7,6 @@
         <ul>
           <li>
             Автор: {{ post.author.get_full_name }}
-            <a href="{% url 'posts:profile' username=user.username %}">все посты пользователя</a>
           </li>
           <li>
             Дата публикации: {{ post.pub_date|date:"d E Y" }}
@@ -22,5 +21,5 @@
       {% endfor %}
     </article>
   </div>
-{% include 'includes/paginator.html' %}
+{% include 'posts/includes/paginator.html' %}
 {% endblock %}

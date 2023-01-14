@@ -33,10 +33,9 @@ class Post(models.Model):
         related_name='posts',
         verbose_name='Group'
     )
-    
+
     def __str__(self):
         return self.text
-    
-    
+
     class Meta:
         ordering = ['-pub_date', ]

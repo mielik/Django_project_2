@@ -9,53 +9,46 @@ POSTS_PER_PAGE: int = 10
 
 def index(request):
     posts = Post.objects.all()
-    paginator = Paginator(posts, POSTS_PER_PAGE) 
+    paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'page_obj': page_obj,
         'posts': posts
     }
-    return render(request, 'posts/index.html', context) 
+    return render(request, 'posts/index.html', context)
 
 
 def group_posts(request, slug):
     template = 'posts/group_list.html'
     group = get_object_or_404(Group, slug=slug)
-    #post = get_object_or_404(Post, pk=post_id)
     posts = group.posts.all()
-    paginator = Paginator(posts, POSTS_PER_PAGE) 
+    paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
         'group': group,
         'posts': posts,
         'page_obj': page_obj,
-        #'post': post
     }
     return render(request, template, context)
 
 
-@login_required
 def profile(request, username):
-    #group = Group.objects.all()
     template = 'posts/profile.html'
-    author = get_object_or_404(User, username=username)
-    posts = author.posts.select_related('author', 'group')
-    post_count = posts.count()
+    user = User.objects.get(username=username)
+    posts = Post.objects.filter(author=user)
     paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
-        'author': author,
-        'post_count': post_count,
+        'author': user,
         'posts': posts,
         'page_obj': page_obj
     }
-    return render(request, template, context) 
+    return render(request, template, context)
 
 
-@login_required
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
     group = Group.objects.all()
@@ -68,7 +61,7 @@ def post_detail(request, post_id):
         'post_count': post_count,
         'posts': posts
     }
-    return render(request, template, context) 
+    return render(request, template, context)
 
 
 @login_required
@@ -96,5 +89,3 @@ def post_edit(request, post_id):
         return redirect('posts:post_detail', post_id)
     context = {'form': form, 'is_edit': True}
     return render(request, 'posts/create_post.html', context)
-
-
