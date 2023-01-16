@@ -11,8 +11,7 @@ POSTS_PER_PAGE: int = 10
 def get_page_obj(request, posts):
     paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return page_obj
+    return paginator.get_page(page_number)
 
 
 def index(request):
@@ -20,7 +19,6 @@ def index(request):
     template = 'posts/index.html'
     page_obj = get_page_obj(request, posts)
     context = {
-        'posts': posts,
         'page_obj': page_obj
     }
     return render(request, template, context)
@@ -40,7 +38,7 @@ def group_posts(request, slug):
 
 def profile(request, username):
     template = 'posts/profile.html'
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     posts = author.posts.all()
     page_obj = get_page_obj(request, posts)
     context = {
@@ -52,28 +50,21 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     template = 'posts/post_detail.html'
-    group = Group.objects.all()
     post = get_object_or_404(Post, pk=post_id)
-    posts = Post.objects.all()
     context = {
-        'post': post,
-        'group': group,
-        'posts': posts
+        'post': post
     }
     return render(request, template, context)
 
 
 @login_required
 def post_create(request):
+    form = PostForm(request.POST or None)
     if request.method == 'POST':
-        current_user = request.user
-        author = Post(author=current_user)
-        form = PostForm(request.POST or None, instance=author)
         if form.is_valid():
+            form.instance.author = request.user
             form.save()
-            return redirect('posts:profile', username=current_user)
-    else:
-        form = PostForm()
+            return redirect('posts:profile', username=request.user)
     return render(request, 'posts/create_post.html', {'form': form})
 
 
