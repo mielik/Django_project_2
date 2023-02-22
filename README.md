@@ -1,3 +1,4 @@
-# backend_community_homework
-
-[![CI](https://github.com/yandex-praktikum/hw03_forms/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw03_forms/actions/workflows/python-app.yml)
+# Django project - blog
+- The Core application has been created and registered.
+- New pages have been added.
+- The paginator is connected.
